@@ -1,0 +1,123 @@
+---
+title: "Just Cats by SK"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    theme: journal
+---
+ 
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(DT)
+library(ggplot2)
+library(plotly)
+library(caret)
+library(pROC)
+```
+
+# Data 1
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Percentage of people that like cats
+
+```{r}
+new_sessions <- 41
+gauge(new_sessions, min = 0, max = 100, symbol = '%', gaugeSectors(warning = c(30, 60)))
+```
+
+### Percentage of people that like dogs
+
+```{r}
+new_sessions <- 74
+gauge(new_sessions, min = 0, max = 100, symbol = '%')
+```
+
+### Cat's Dataframe
+
+```{r}
+table <- read.csv("catsM.csv")
+DT::datatable(table, options = list(
+  pageLength = 5
+))
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Height vs. Weight for Male Cats
+
+```{r}
+ggplot(table, aes(Hwt, Bwt)) +
+  geom_point(aes(colour = factor(Sex))) +
+  labs(x = "Height", y = "Weight")
+```
+
+# Data 2
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Heaviest Cat
+
+```{r}
+valueBox(paste0(max(table$Bwt), " kg"), icon = "fa-spoon", color = "orange")
+```
+
+### Lightest Cat
+```{r}
+valueBox(paste0(min(table$Bwt), " kg"), icon = "fa-spoon")
+```
+
+### Tallest Cat
+```{r}
+valueBox(paste0(max(table$Hwt), " cm"), icon = "fa-expand", color = "orange")
+```
+
+### Shortest Cat
+```{r}
+valueBox(paste0(min(table$Hwt), " cm"), icon = "fa-expand")
+```
+
+Column {data-width=450}
+-----------------------------------------------------------------------
+
+### Most popular household pets
+```{r}
+pets <- data.frame(pet = c("fish", "dogs", "cats", "birds"), amount = c(7738, 43346, 36117, 3671))
+ggplot(pets, aes(x = pet, y = amount, fill = pet)) +
+  geom_bar(stat="identity") + scale_fill_hue(c=45, l=80)
+```
+
+# Predictions
+
+Column {data-width=280}
+-----------------------------------------------------------------------
+
+### Linear Model
+
+```{r echo=FALSE, warning=FALSE}
+train.index = sample(c("train", "test"), nrow(table), replace = TRUE, prob = c(0.8, 0.2))
+divided = split(table, train.index)
+fit <- train(Bwt ~ Hwt, data = divided$train, method = "lm", 
+             tuneGrid  = expand.grid(intercept = c(FALSE, TRUE)),
+             trControl = trainControl(
+               method = "cv",
+               number = 10
+             ))
+summary(fit)
+predict.response <- predict(fit, divided$test)
+divided$test$pred <- predict.response
+divided$test$pred <- format(round(divided$test$pred, 1), nsmall = 1)
+```
+
+Column {data-width=300}
+-----------------------------------------------------------------------
+
+### Observed vs. Predicted values
+```{r}
+plot(divided$test$Bwt, predict(fit, divided$test), xlab = "Observed Weight", ylab = "Predicted Weight", col = "#FF0080")
+abline(a = 0, b = 1, lty = "dashed")
+```
