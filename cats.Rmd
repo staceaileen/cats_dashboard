@@ -21,20 +21,6 @@ library(pROC)
 Column {data-width=450}
 -----------------------------------------------------------------------
 
-### Percentage of people that like cats
-
-```{r}
-new_sessions <- 41
-gauge(new_sessions, min = 0, max = 100, symbol = '%', gaugeSectors(warning = c(30, 60)))
-```
-
-### Percentage of people that like dogs
-
-```{r}
-new_sessions <- 74
-gauge(new_sessions, min = 0, max = 100, symbol = '%')
-```
-
 ### Cat's Dataframe
 
 ```{r}
@@ -43,6 +29,14 @@ DT::datatable(table, options = list(
   pageLength = 5
 ))
 ```
+
+### Percentage of people that like cats
+
+```{r}
+new_sessions <- 41
+gauge(new_sessions, min = 0, max = 100, symbol = '%', gaugeSectors(warning = c(30, 60)))
+```
+
 
 Column {data-width=450}
 -----------------------------------------------------------------------
@@ -53,6 +47,13 @@ Column {data-width=450}
 ggplot(table, aes(Hwt, Bwt)) +
   geom_point(aes(colour = factor(Sex))) +
   labs(x = "Height", y = "Weight")
+```
+
+### Percentage of people that like dogs
+
+```{r}
+new_sessions <- 74
+gauge(new_sessions, min = 0, max = 100, symbol = '%')
 ```
 
 # Data 2

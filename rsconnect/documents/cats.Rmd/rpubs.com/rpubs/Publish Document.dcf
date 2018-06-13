@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/396812/11012f38401c4e06b461dd883781d1a1
+bundleId: https://api.rpubs.com/api/v1/document/396812/11012f38401c4e06b461dd883781d1a1
+url: http://rpubs.com/staceaileen/396812
+when: 1528890735.43832
